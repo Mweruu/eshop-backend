@@ -7,24 +7,24 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false,
             unique: true,
           },
-          name:{
-            type: DataTypes.STRING,
-            defaultValue:'',
-            allowNull: false,
+        name:{
+          type: DataTypes.STRING,
+          defaultValue:'',
+          allowNull: false,
 
-          },
-          color:{
-            type: DataTypes.STRING,
-            defaultValue:''
-          },
-          icon:{
-            type: DataTypes.STRING,
-            defaultValue:''
-          },
-          image:{
-            type: DataTypes.STRING,
-            defaultValue:''
-          }
+        },
+        color:{
+          type: DataTypes.STRING,
+          defaultValue:''
+        },
+        icon:{
+          type: DataTypes.STRING,
+          defaultValue:''
+        },
+        image:{
+          type: DataTypes.STRING,
+          defaultValue:''
+        }
         },{});
         return Category;
     };

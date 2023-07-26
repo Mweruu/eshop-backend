@@ -19,6 +19,7 @@ router.post('/createproducts', async (req,res) =>{
         }
         const product = await models.product.create({
             id: randomUUID(),
+            userId:req.body.userId,
             categoryId:req.body.categoryId,
             name:req.body.name,
             price:req.body.price,
@@ -132,6 +133,29 @@ router.get('/getproducts/:categoryId', async (req,res) => {
 
         const products = await models.product.findAll(
             { where:{categoryId}}
+        );
+        res.status(200).json(products);
+    }catch(err){
+        res.status(500).json({
+            error: err.message,
+            success: false  
+        });
+    }
+});
+
+router.get('/getproducts/:userId', async (req,res) => {
+    const userId = req.params.userId;
+    try{
+        const userId = await models.category.findByPk(userId);
+        if(!userId){
+            res.status(500).json({
+                message:'user not found',
+                success:false
+            })
+        }
+
+        const products = await models.product.findAll(
+            { where:{userId}}
         );
         res.status(200).json(products);
     }catch(err){

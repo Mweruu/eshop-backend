@@ -2,8 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
     const Product = sequelize.define('product',{
         id: {
-            type: DataTypes.INTEGER,
-            autoIncrement: true,
+            type: DataTypes.STRING,
             primaryKey: true,
             allowNull: false,
             unique: true,
@@ -31,9 +30,6 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue:0
         },
-        // category:{ 
-        //     type: categoryid
-        // },
         countInStock:{
             type: DataTypes.INTEGER,
             allowNull: true
@@ -42,15 +38,29 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             defaultValue: 0
         },
+        // numReviews:{
+        //     type: DataTypes.DATE,
+        //     defaultValue: null
+        // },
         isFeatured:{ 
             type: DataTypes.BOOLEAN,
             defaultValue: false
         },
-        DateCreated:{
-            type: DataTypes.DATE,
-            defaultValue: null
-        }
+       
     
     },{});
+    Product.associate = function(models){
+        Product.belongsTo(models.category,{
+            foreignKey:'categoryId'
+        })
+        // Product.belongsTo(models.order, {
+        //     foreignKey:'orderId'
+        // })
+
+        // Product.belongsTo(models.user, {
+        //     foreignKey:'userId'
+        // })
+    };
+
         return Product;
     };

@@ -3,8 +3,6 @@ const bycrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
-const {Category} = require ('../../database/models/category');
-const { where } = require("sequelize");
 
 
 router.post('/createcategory', async (req,res) =>{
@@ -15,7 +13,7 @@ router.post('/createcategory', async (req,res) =>{
         icon:req.body.icon,
         color:req.body.color,
         image:req.body.image,
-    })
+    });
     return res.status(201).json({
         category,
     });
@@ -31,9 +29,9 @@ router.get('/getcategories', async (req,res) =>{
     return res.status(201).json({
         categories,
     });
-}catch (error) {
-    return res.status(500).json({error: error.message})
-}
+    }catch (error) {
+        return res.status(500).json({error: error.message})
+    }
 })
 
 router.get('/getcategory/:id',async (req,res) =>{
@@ -60,7 +58,7 @@ router.get('/getcategory/:id',async (req,res) =>{
 router.put('/updatecategory/:id',async(req,res) =>{
     const id = req.params.id;
     try{
-        const category = await models.category.findByPk(id,{})
+        const category = await models.category.findByPk(id,{});
         if(!category){
             res.status(500).json({
                 message: 'category not found',
@@ -84,7 +82,6 @@ router.put('/updatecategory/:id',async(req,res) =>{
         })
     }
 })
-
 
 router.delete('/deletecategory/:id', async(req,res)=>{
     const id = req.params.id;

@@ -7,10 +7,20 @@ const router = express.Router();
 
 router.post('/createorder', async (req,res) => {
     try {
+        const dateOrdered = new Date();
     const order = await models.order.create({
-        name:req.body.name
-
-    })
+        userId:req.body.userId,
+        shippingAddress1:req.body.shippingAddress1,
+        shippingAddress2:req.body.shippingAddress2,
+        city:req.body.city,
+        zip:req.body.zip,
+        country:req.body.country,
+        phone:req.body.phone,
+        status:req.body.status,
+        totalPrice:req.body.totalPrice,
+        dateOrdered:dateOrdered,
+       
+    });
     return res.status(201).json({
         order,
     });
@@ -19,9 +29,9 @@ router.post('/createorder', async (req,res) => {
     } 
 });
 
-
 router.get('/getorders', async (req,res) => {
-    try {const orders = await models.order.findAll();
+    try {
+        const orders = await models.order.findAll();
         return res.status(201).json({
             orders,
         });
@@ -34,7 +44,7 @@ router.get('/getorders', async (req,res) => {
 router.get('/getorder/:id', async (req,res) => {
     const id = req.params.id;
     try{
-        const order = await models.order.findByPk(id,{})
+        const order = await models.order.findByPk(id,{});
         if(!order){
             res.status(500).json({
                 message:'order not found',
@@ -50,10 +60,45 @@ router.get('/getorder/:id', async (req,res) => {
     }
 });
 
+router.get('/getorders/:userId', async (req,res) => {
+    const userId = req.params.userId;
+    try{
+        const user = await models.user.findByPk(userId,{});
+        if(!user){
+            res.status(500).json({
+                message:'user not found',
+                success:false,
+            });
+        }
+
+        const order = await models.order.findAll({
+            where:{userId}
+        })
+        res.status(200).json(order)
+    }catch(err){
+        return res.status(500).json({
+            error:err.message,
+            success:false,
+        });
+    }
+});
+
 router.put('/updateorder/:id', async (res,req) =>{
     const id =req.params.id;
     try{
-        const order = await models.order.findByPk(id,{})
+        const order = await models.order.findByPk(id,{
+            userId:req.body.userId,
+            shippingAddress1:req.body.shippingAddress1,
+            shippingAddress2:req.body.shippingAddress2,
+            city:req.body.city,
+            zip:req.body.zip,
+            country:req.body.country,
+            phone:req.body.phone,
+            status:req.body.status,
+            totalPrice:req.body.totalPrice,
+            dateOrdered:req.body.dateOrdered,
+
+        });
         if(!order){
             res.status(500).json({
                 message:'order does not exist',
@@ -65,7 +110,7 @@ router.put('/updateorder/:id', async (res,req) =>{
         },
             {
                 where: { id: id}
-            })
+            });
         res.status(200).json(updatedOrder)
     }catch(err){
         res.status(500).json({
@@ -78,7 +123,7 @@ router.put('/updateorder/:id', async (res,req) =>{
 router.delete('/deleteorder/:id', async (req,res) => {
     const id = req.params.id;
     try{
-        const order = await models.order.findByPk(id,{})
+        const order = await models.order.findByPk(id,{});
         if(!order){
             res.status(500).json({
                 message:'order not found',
@@ -90,7 +135,7 @@ router.delete('/deleteorder/:id', async (req,res) => {
         return res.status(500).json({
             error:err.message,
             success:false,
-        })
+        });
     }
 });
 

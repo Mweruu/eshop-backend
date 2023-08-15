@@ -1,6 +1,4 @@
 const models = require("../../database/models");
-const bycrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
 
@@ -26,10 +24,10 @@ router.post('/createcategory', async (req,res) =>{
 router.get('/getcategories', async (req,res) =>{
    try {
     const categories = await models.category.findAll();
-    return res.status(201).json({
+    return res.status(201).json(
         categories,
-    });
-    }catch (error) {
+    );
+    } catch (error) {
         return res.status(500).json({error: error.message})
     }
 })
@@ -60,7 +58,7 @@ router.put('/updatecategory/:id',async(req,res) =>{
     try{
         const category = await models.category.findByPk(id,{});
         if(!category){
-            res.status(500).json({
+            return res.status(500).json({
                 message: 'category not found',
                 success:false
             });
@@ -86,17 +84,20 @@ router.put('/updatecategory/:id',async(req,res) =>{
 router.delete('/deletecategory/:id', async(req,res)=>{
     const id = req.params.id;
     try{
-        const category = await models.category.findByPk(id, {
-        });
+        const category = await models.category.findByPk(id);
         console.log(category)
         if(!category) {
-            return res.status(500).json({
-                error: `category can not be found`,
+            return res.status(404).json({
+                error: `category not found`,
                 success: false})
         } 
         await category.destroy();
+        return res.status(200).json({
+            success: true,
+            message: `Category deleted successfully`
+          });
         } catch(err){
-        res.status(400).json({
+        res.status(500).json({
             error: err.message,
             success: false 
         });

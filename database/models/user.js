@@ -50,10 +50,10 @@ module.exports = (sequelize, DataTypes) => {
 
         },{});
         User.associate = function(models){
-          User.hasMany(models.product,{
+          User.hasMany(models.product, {
             foreignKey:'userId'
           })
-          User.hasMany(models.order,{
+          User.hasMany(models.order, {
             foreignKey:'userId'
           })
         };

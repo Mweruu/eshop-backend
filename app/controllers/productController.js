@@ -12,8 +12,15 @@ router.post('/createproducts', async (req,res) =>{
     try{
         const category = await models.category.findByPk(req.body.categoryId);
         if(!category){
-            res.status(500).json({
+            return res.status(500).json({
                 message:'categoryId not found',
+                success:false
+            })
+        }
+        const user = await models.user.findByPk(req.body.userId);
+        if(!user){
+            return res.status(500).json({
+                message:'user not found',
                 success:false
             })
         }
@@ -37,18 +44,20 @@ router.post('/createproducts', async (req,res) =>{
         product,
     });
     } catch (error) {
-    return res.status(500).json({error: error.message})
+    return res.status(500).json({
+        success:false,
+        error: error.message})
     }
 
 });
 
 router.get('/getproducts', async (req,res) =>{
    try {const products = await models.product.findAll({
-    // include:models.category
+    include:models.category
    });
-    return res.status(201).json({
+    return res.status(201).json(
         products,
-    });
+    );
 }catch (error) {
     return res.status(500).json({error: error.message})
 }
@@ -57,8 +66,7 @@ router.get('/getproducts', async (req,res) =>{
 router.put('/updateproduct/:id',async(req,res) =>{
     const id =req.params.id
     try{
-      const product = await models.product.findByPk(id, {
-     });
+      const product = await models.product.findByPk(id, {});
      if(!product){
          return res.status(500).json({
              success:false,
@@ -72,13 +80,23 @@ router.put('/updateproduct/:id',async(req,res) =>{
                 success:false
             })
         }
+
+    const user = await models.user.findByPk(req.body.userId);
+        if(!user){
+            res.status(500).json({
+                message:'user not found',
+                success:false
+            })
+        }
     
      const updatedProduct = await models.product.update({
         id: randomUUID(),
+        userId:req.body.userId,
         categoryId:req.body.categoryId,
         name:req.body.name,
         price:req.body.price,
         description:req.body.description,
+        richDescription:req.body.richDescription,
         brand:req.body.brand,
         countInStock:req.body.countInStock,
         rating:req.body.rating,
@@ -102,15 +120,14 @@ router.put('/updateproduct/:id',async(req,res) =>{
 router.get('/getproduct/:id', async (req,res) => {
     const id =req.params.id
     try{
-        const product = await models.product.findByPk(id, {
-    });
+        const product = await models.product.findByPk(id, {});
     if(!product){
         return res.status(500).json({
             success:false,
             message:'product not found'
         });
     }
-    return res.status(200).json(product) 
+    res.status(200).json(product) 
     }catch(err){
         res.status(400).json({
             error: err.message,
@@ -125,7 +142,7 @@ router.get('/getproducts/:categoryId', async (req,res) => {
     try{
         const category = await models.category.findByPk(categoryId);
         if(!category){
-            res.status(500).json({
+            return res.status(500).json({
                 message:'category not found',
                 success:false
             })
@@ -143,12 +160,12 @@ router.get('/getproducts/:categoryId', async (req,res) => {
     }
 });
 
-router.get('/getproducts/:userId', async (req,res) => {
+router.get('/getuserproducts/:userId', async (req,res) => {
     const userId = req.params.userId;
     try{
-        const userId = await models.category.findByPk(userId);
-        if(!userId){
-            res.status(500).json({
+        const user = await models.category.findByPk(userId);
+        if(!user){
+            return res.status(500).json({
                 message:'user not found',
                 success:false
             })
@@ -171,13 +188,16 @@ router.delete('/deleteproduct/:id', async (req,res) => {
     try{
         const product = await models.product.findByPk(id,{});
     if(!product){
-        res.status(500).json({
+        return res.status(500).json({
             success:false,
             message:'product not found'
         });
     }
     await product.destroy();
-
+    return res.status(200).json({
+        success: true,
+        message: `Product deleted successfully`
+      });
     }catch(err){
         res.status(400).json({
             error:err.message,

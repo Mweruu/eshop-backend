@@ -50,15 +50,14 @@ module.exports = (sequelize, DataTypes) => {
     
     },{});
     Product.associate = function(models){
-        Product.belongsTo(models.category,{
+        Product.belongsTo(models.category, {
             foreignKey:'categoryId'
         })
-        // Product.belongsTo(models.order, {
+        Product.belongsTo(models.user, {
+            foreignKey:'userId'
+        })
+         // Product.belongsTo(models.order, {
         //     foreignKey:'orderId'
-        // })
-
-        // Product.belongsTo(models.user, {
-        //     foreignKey:'userId'
         // })
     };
 

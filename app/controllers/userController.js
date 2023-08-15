@@ -73,9 +73,9 @@ router.get('/getusers', async (req,res) =>{
         // to fetch all users and exclude the passwordHash field from the query results.
         attributes: { exclude: ['passwordHash'] }
     });
-    return res.status(201).json({
+    return res.status(201).json(
         users,
-    });
+    );
 }catch (error) {
     return res.status(500).json({error: error.message})
 }
@@ -89,7 +89,7 @@ router.get('/getuser/:id', async (req,res) => {
 
         });
         if(!user){
-            res.status(500).json({
+            return res.status(500).json({
                 success:false,
                 message:'user not found'
             });
@@ -106,7 +106,13 @@ router.get('/getuser/:id', async (req,res) => {
 router.put('/updateuser/:id', async(req,res)=>{
     const id = req.params.id;
     try{
-        const user = await models.user.findByPk(id, {
+        const user = await models.user.findByPk(id, {});
+        if(!user){
+           return res.status(500).json({ 
+            message:'user not found',
+            success:false});
+        }
+        const updatedUser = await models.user.update({
             name:req.body.name,
             email:req.body.email,
             passwordHash:bycrypt.hashSync(req.body.password, 10),
@@ -116,17 +122,8 @@ router.put('/updateuser/:id', async(req,res)=>{
             zip:req.body.zip,
             country:req.body.country,
             phone:req.body.phone,
-            isAdmin:req.body.isAdmin,
-
-        });
-        if(!user){
-           res.status(500).json({ 
-            message:'user not found',
-            success:false});
-        }
-        const updatedUser = await models.user.update({
-            name:req.body.name
-        },{
+            isAdmin:req.body.isAdmin,      
+          },{
             where: { id: id}
         })
         res.status(200).json(updatedUser)
@@ -146,12 +143,16 @@ router.delete('/deleteuser/:id', async (req,res) => {
     try{
         const user = await models.user.findByPk(id,{});
         if(!user){
-            res.status(500).json({
+            return res.status(500).json({
                 success:false,
                 message:'user not found'
             });
         }
         await user.destroy();
+        return res.status(200).json({
+            success: true,
+            message: `User deleted successfully`
+          });
     }catch(err){
         return res.status(500).json({
             success:false,

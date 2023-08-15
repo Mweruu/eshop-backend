@@ -31,10 +31,12 @@ router.post('/createorder', async (req,res) => {
 
 router.get('/getorders', async (req,res) => {
     try {
-        const orders = await models.order.findAll();
-        return res.status(201).json({
-            orders,
+        const orders = await models.order.findAll({
+            include:models.user
         });
+        return res.status(201).json(
+            orders,
+        );
     }catch (error) {
         return res.status(500).json({error: error.message})
     }
@@ -44,9 +46,11 @@ router.get('/getorders', async (req,res) => {
 router.get('/getorder/:id', async (req,res) => {
     const id = req.params.id;
     try{
-        const order = await models.order.findByPk(id,{});
+        const order = await models.order.findByPk(id,{
+            include:models.user
+        });
         if(!order){
-            res.status(500).json({
+            return res.status(500).json({
                 message:'order not found',
                 success:false,
             });
@@ -65,7 +69,7 @@ router.get('/getorders/:userId', async (req,res) => {
     try{
         const user = await models.user.findByPk(userId,{});
         if(!user){
-            res.status(500).json({
+            return res.status(500).json({
                 message:'user not found',
                 success:false,
             });
@@ -83,10 +87,18 @@ router.get('/getorders/:userId', async (req,res) => {
     }
 });
 
-router.put('/updateorder/:id', async (res,req) =>{
-    const id =req.params.id;
+router.put('/updateorder/:id', async (req,res) =>{
+    const id = req.params.id;
     try{
-        const order = await models.order.findByPk(id,{
+        const order = await models.order.findByPk(id,{});
+        if(!order){
+            return res.status(500).json({
+                message:'order does not exist',
+                success:false
+            });
+        }
+        const dateOrdered = new Date();
+        const updatedOrder = await models.order.update({
             userId:req.body.userId,
             shippingAddress1:req.body.shippingAddress1,
             shippingAddress2:req.body.shippingAddress2,
@@ -96,19 +108,8 @@ router.put('/updateorder/:id', async (res,req) =>{
             phone:req.body.phone,
             status:req.body.status,
             totalPrice:req.body.totalPrice,
-            dateOrdered:req.body.dateOrdered,
-
-        });
-        if(!order){
-            res.status(500).json({
-                message:'order does not exist',
-                success:false
-            });
-        }
-        const updatedOrder = await models.order.update({
-            name:req.body.name
-        },
-            {
+            dateOrdered:dateOrdered,        
+        },{
                 where: { id: id}
             });
         res.status(200).json(updatedOrder)
@@ -125,12 +126,16 @@ router.delete('/deleteorder/:id', async (req,res) => {
     try{
         const order = await models.order.findByPk(id,{});
         if(!order){
-            res.status(500).json({
+            return res.status(500).json({
                 message:'order not found',
                 success:false,
             });
         }
         await order.destroy();
+        return res.status(200).json({
+            success: true,
+            message: `Order deleted successfully`
+          });
     }catch(err){
         return res.status(500).json({
             error:err.message,

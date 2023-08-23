@@ -4,6 +4,8 @@ const morgan = require('morgan');
 require('dotenv/config');
 const cors = require("cors");
 
+const authJwt = require('./helpers/jwt');
+const errorHandler = require('./helpers/error-handler');
 const api = process.env.API_URL;
 const productRouter = require('./app/controllers/productController');
 const categoryRouter = require('./app/controllers/categoryController');
@@ -14,6 +16,10 @@ const orderRouter = require('./app/controllers/orderController');
 app.use(express.json());
 app.use(cors());
 app.use(morgan('tiny'));
+// app.use(authJwt);
+// app.use(errorHandler);
+
+
 app.use(`${api}`, productRouter);
 app.use(`${api}`, categoryRouter);
 app.use(`${api}`, userRouter);

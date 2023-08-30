@@ -1,6 +1,7 @@
 const models = require("../../database/models");
 const express = require('express');
 const router = express.Router();
+const env = process.env.NODE_ENV
 
 
 router.post('/createcategory', async (req,res) =>{

@@ -41,10 +41,6 @@ module.exports = (sequelize, DataTypes) => {
           type:DataTypes.STRING,
           allowNull:false
         }, 
-        // user:{
-        //   type:DataTypes.STRING,
-        //   allowNull:false
-        // }, 
         dateOrdered:{
           type:DataTypes.DATE,
           allowNull:true,

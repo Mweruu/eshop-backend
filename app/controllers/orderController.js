@@ -4,7 +4,6 @@ const jwt = require('jsonwebtoken');
 const express = require('express');
 const router = express.Router();
 
-
 router.post('/createorder', async (req,res) => {
     try {
         const dateOrdered = new Date();
@@ -34,9 +33,10 @@ router.get('/getorders', async (req,res) => {
         const orders = await models.order.findAll({
             include:models.user
         });
+        console.log(orders)
         return res.status(201).json(
             orders,
-        );
+        );            
     }catch (error) {
         return res.status(500).json({error: error.message})
     }
@@ -47,7 +47,9 @@ router.get('/getorder/:id', async (req,res) => {
     const id = req.params.id;
     try{
         const order = await models.order.findByPk(id,{
-            include:models.user
+            include:models.user,
+            // include:models.product
+
         });
         if(!order){
             return res.status(500).json({

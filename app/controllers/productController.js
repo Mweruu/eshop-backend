@@ -43,13 +43,6 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
                 success:false
             })
         }
-        const user = await models.user.findByPk(req.body.userId);
-        if(!user){
-            return res.status(500).json({
-                message:'user not found',
-                success:false
-            })
-        }
 
         let file = null;
         let files = [];
@@ -79,7 +72,6 @@ router.post('/createproducts', uploadOptions.any(), async (req,res) =>{
 
         const product = await models.product.create({
             id: randomUUID(),
-            userId:req.body.userId,
             categoryId:req.body.categoryId,
             name:req.body.name,
             price:req.body.price,
@@ -134,14 +126,6 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
             })
         }
 
-    // const user = await models.user.findByPk(req.body.userId);
-    //     if(!user){
-    //         return res.status(500).json({
-    //             message:'user not found',
-    //             success:false
-    //         })
-    //     }
-
 
     let file = null;
     let files = [];
@@ -167,7 +151,6 @@ router.put('/updateproduct/:id', uploadOptions.any(),async(req,res) =>{
     
      const updatedProduct = await models.product.update({
         id: randomUUID(),
-        // userId:req.body.userId,
         categoryId:req.body.categoryId,
         name:req.body.name,
         price:req.body.price,

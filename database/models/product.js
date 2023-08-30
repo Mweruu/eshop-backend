@@ -40,7 +40,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         // numReviews:{
         //     type: DataTypes.DATE,
-        //     defaultValue: null
+        //     allowNull: true
         // },
         isFeatured:{ 
             type: DataTypes.BOOLEAN,
@@ -53,10 +53,7 @@ module.exports = (sequelize, DataTypes) => {
         Product.belongsTo(models.category, {
             foreignKey:'categoryId'
         })
-        Product.belongsTo(models.user, {
-            foreignKey:'userId'
-        })
-         // Product.belongsTo(models.order, {
+        //  Product.belongsTo(models.order, {
         //     foreignKey:'orderId'
         // })
     };

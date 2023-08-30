@@ -3,14 +3,16 @@ const app = express();
 const morgan = require('morgan');
 require('dotenv/config');
 const cors = require("cors");
+const serverless = require("serverless-http");
 
-const authJwt = require('./helpers/jwt');
-const errorHandler = require('./helpers/error-handler');
+
+const authJwt = require('../helpers/jwt');
+const errorHandler = require('../helpers/error-handler');
 const api = process.env.API_URL;
-const productRouter = require('./app/controllers/productController');
-const categoryRouter = require('./app/controllers/categoryController');
-const userRouter = require('./app/controllers/userController');
-const orderRouter = require('./app/controllers/orderController');
+const productRouter = require('../app/controllers/productController');
+const categoryRouter = require('../app/controllers/categoryController');
+const userRouter = require('../app/controllers/userController');
+const orderRouter = require('../app/controllers/orderController');
 
 //middleware
 app.use(express.json());
@@ -37,3 +39,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>{
     console.log(`Server  is running on port ${PORT}`);
 })
+
+module.exports.handler = serverless(app)

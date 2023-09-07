@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const morgan = require('morgan');
 require('dotenv/config');
-const cors = require("cors");
+const cors = require('cors');
 
 const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');

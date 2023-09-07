@@ -6,8 +6,8 @@
   "scripts": {
     "ng": "nx",
     "nx": "nx",
-    "start": "./node_modules/.bin/netlify-lambda serve src",
-    "build": "netlify deploy --prod"
+    "start": "nodemon index.js",
+    "build": "npm i"
   },
   "author": "",
   "license": "ISC",
